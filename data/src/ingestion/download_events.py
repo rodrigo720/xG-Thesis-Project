@@ -45,46 +45,47 @@ def download_event(match_id: int, out_dir: Path) -> bool:
     return True
 
 
-def main(limit: int = 20, max_total_mb: float = 300.0):
-    """
-    limit: quanti match scaricare (per partire leggero)
-    max_total_mb: stop se la cartella supera questa dimensione
-    """
+def main(n_matches: int = 20, max_total_mb: float = 300.0):
+
     if not MATCH_IDS_PATH.exists():
-        raise FileNotFoundError(f"Non trovo {MATCH_IDS_PATH}. Hai già generato match_ids.json?")
+        raise FileNotFoundError(f"Non trovo {MATCH_IDS_PATH}")
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
 
     match_ids = load_match_ids(MATCH_IDS_PATH)
 
-    # Scarica solo un campione iniziale (limit)
-    match_ids = match_ids[:limit]
-
     skipped = 0
     downloaded = 0
 
-    print(f"Match in input: {len(match_ids)} | cartella events attuale: {approx_dir_size_mb(OUT_DIR):.1f} MB")
-    print(f"Limite download: {limit} match | Quota massima cartella: {max_total_mb} MB\n")
+    print(f"Match totali disponibili: {len(match_ids)}")
+    print(f"Richiesti: {n_matches}")
+    print(f"Quota massima disco: {max_total_mb} MB")
+    print(f"Dimensione iniziale cartella: {approx_dir_size_mb(OUT_DIR):.1f} MB\n")
 
-    for i, mid in enumerate(match_ids, start=1):
+    for mid in match_ids:
 
-        # quota check
+        # Stop per numero match
+        if downloaded >= n_matches:
+            print(f"\n[STOP] Raggiunto limite match richiesti: {n_matches}")
+            break
+
+        # Stop per spazio disco
         size_mb = approx_dir_size_mb(OUT_DIR)
         if size_mb >= max_total_mb:
-            print(f"\n[STOP] Raggiunta quota {size_mb:.1f} MB (limite {max_total_mb} MB).")
+            print(f"\n[STOP] Raggiunta quota disco {size_mb:.1f} MB")
             break
 
         did_download = download_event(mid, OUT_DIR)
+
         if did_download:
             downloaded += 1
         else:
             skipped += 1
 
-        if i % 5 == 0 or i == len(match_ids):
-            print(f"Progress: {i}/{len(match_ids)} | downloaded={downloaded} skipped={skipped} | size={approx_dir_size_mb(OUT_DIR):.1f} MB")
+        if downloaded % 5 == 0:
+            print(f"Downloaded={downloaded} | Size={approx_dir_size_mb(OUT_DIR):.1f} MB")
 
     print(f"\nFINE: downloaded={downloaded}, skipped={skipped}, size={approx_dir_size_mb(OUT_DIR):.1f} MB")
-    print(f"Output dir: {OUT_DIR.resolve()}")
 
 
 if __name__ == "__main__":
