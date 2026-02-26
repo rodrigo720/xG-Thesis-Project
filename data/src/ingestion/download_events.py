@@ -88,5 +88,5 @@ def main(limit: int = 20, max_total_mb: float = 300.0):
 
 
 if __name__ == "__main__":
-    # Cambia qui se vuoi: es. limit=10 per partire super leggero
+    # CAMBIA QUI se vuoi variare il dataset
     main(limit=20, max_total_mb=300.0)
