@@ -11,7 +11,6 @@ OUT_DIR = Path("data/raw/events")
 def load_match_ids(path: Path) -> list[int]:
     with path.open("r", encoding="utf-8") as f:
         ids = json.load(f)
-    # assicurati siano int
     return [int(x) for x in ids]
 
 
@@ -21,7 +20,7 @@ def approx_dir_size_mb(folder: Path) -> float:
     total = 0
     for p in folder.rglob("*"):
         if p.is_file():
-            total += p.stat().st_size
+            total += p.stat().st_size #chiedo il dettaglio del file con .stat() e .st_size prendo il BYTE
     return total / (1024 * 1024)
 
 
