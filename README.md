@@ -100,3 +100,7 @@ The full dataset will be built using all selected matches.
 - Pandas
 - Scikit-learn
 - StatsBomb Open Data
+
+Books:
+- Hands-On Machine learning with Scikit-Learn,Keras and Tensorflow
+- Python for Data Analysis
