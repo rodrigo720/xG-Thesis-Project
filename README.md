@@ -21,22 +21,26 @@ The analysis focuses on:
 ---
 
 ## Project Structure
-data/
-raw/
-matches/ # downloaded match lists (not versioned)
-events/ # downloaded event data (not versioned)
-processed/
-match_ids.json
-shots_sample.csv
+## 📁 Project Structure
 
-src/
-ingestion/
-download_matches.py
-extract_match_ids.py
-download_events.py
-preprocessing/
-build_shots_dataset.py
-
+```text
+.
+├── data/
+│   ├── raw/
+│   │   ├── matches/          # Downloaded match lists (not versioned)
+│   │   └── events/           # Downloaded event data (not versioned)
+│   └── processed/
+│       ├── match_ids.json
+│       └── shots_sample.csv
+├── src/
+│   ├── ingestion/
+│   │   ├── download_matches.py
+│   │   ├── extract_match_ids.py
+│   │   └── download_events.py
+│   └── preprocessing/
+│       └── build_shots_dataset.py
+└── README.md
+```
 
 ---
 
