@@ -97,7 +97,7 @@ These analyses help understand the structure of the dataset before model trainin
 ---
 
 ### Distribuzione della Distanza dei Tiri - World Cup 2022
-![Shot distance distribution](reports/figures/distance_distribution_wc2022.png)
+![Shot distance distribution](report/figures/distance_distribution_wc2022.png)
 
 ## Next Steps
 
