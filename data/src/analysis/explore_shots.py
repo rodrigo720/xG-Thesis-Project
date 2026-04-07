@@ -35,17 +35,20 @@ def main():
     plt.close()
 
     #Goal rate per distanza
-    df["distance_bin"] = pd.cut(df["distance"],bins=10)
+    bins=[0,10,20,30,40,50,100] #raggruppamento
+    labels=["0-10","10-20","20-30","30-40","40-50","40+"]
 
-    goal_rate = df.groupby("distance_bin")["goal"].mean().reset_index() 
+    df["distance_bin"] = pd.cut(df["distance"],bins=bins,labels=labels)
+
+    goal_rate = df.groupby("distance_bin")["goal"].mean().reset_index()
 
     plt.figure(figsize=(8,5))
     sns.barplot(x="distance_bin", y="goal", data=goal_rate)
-    plt.xticks(rotation=45)
     plt.title("Goal Rate by Distance")
-    plt.xlabel("Distance bin")
+    plt.xlabel("Distance from Goal (m)")
     plt.ylabel("Goal probability")
-    plt.savefig(FIGURES_PATH/"goal_rate_by_distance_wc2022.png")
+    plt.tight_layout()
+    plt.savefig(FIGURES_PATH / "goal_rate_by_distance_wc2022.png")
     plt.close
 
     #Distribuzione body part
