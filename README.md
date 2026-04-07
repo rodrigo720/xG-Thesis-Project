@@ -9,14 +9,22 @@ The goal of this project is to compare:
 - Logistic Regression (with L1 regularization)
 - Random Forest
 
-for the estimation of Expected Goals (xG), using shot-level data from major international competitions.
+The analysis is performed on event data provided by **StatsBomb Open Data**.
 
-The analysis focuses on:
+## Dataset
 
-- FIFA World Cup 2018
-- FIFA World Cup 2022
-- UEFA Euro 2020
-- UEFA Euro 2024
+The dataset used in the current analysis includes all matches from the **FIFA World Cup 2022**.
+
+Dataset characteristics:
+
+- 64 matches
+- 1430 shots (penalties excluded)
+- shot-level dataset (1 row = 1 shot)
+Data source:
+
+- StatsBomb Open Data
+
+The dataset was constructed by extracting **shot events** from the full event data of each match.
 
 ---
 
@@ -26,63 +34,70 @@ The analysis focuses on:
 ```text
 .
 ├── data/
-│   ├── raw/
-│   │   ├── matches/          # Downloaded match lists (not versioned)
-│   │   └── events/           # Downloaded event data (not versioned)
-│   └── processed/
-│       ├── match_ids.json
-│       └── shots_sample.csv
+│   ├── raw/                # Dati grezzi (immutabili)
+│   └── processed/          # Dati puliti e trasformati (Dtypes ottimizzati)
 ├── src/
-│   ├── ingestion/
-│   │   ├── download_matches.py
-│   │   ├── extract_match_ids.py
-│   │   └── download_events.py
-│   └── preprocessing/
-│       └── build_shots_dataset.py
+│   ├── ingestion/          # Script per il caricamento dei dati
+│   ├── preprocessing/      # Pulizia, gestione NaN e casting dei tipi
+│   └── analysis/           # Analisi esplorativa e calcoli statistici
+├── reports/
+│   └── figures/            # Grafici, diagrammi ed esportazioni
 └── README.md
 ```
 
----
+
 
 ## Data Pipeline
 
-1. Select competitions and seasons.
-2. Download match lists from StatsBomb Open Data.
-3. Extract `match_id` for selected competitions.
-4. Download event data for each match.
-5. Build a shot-level dataset (1 row = 1 shot).
-6. Exclude penalty kicks.
-7. Prepare dataset for modeling.
+The project includes a complete data pipeline implemented in Python.
 
-All raw data are excluded from version control and can be regenerated using the ingestion scripts.
+Steps:
 
+1. Select competitions and seasons
+2. Download match metadata
+3. Extract match IDs
+4. Download event data for each match
+5. Filter shot events
+6. Build a shot-level dataset
+7. Perform feature engineering and exploratory data analysis
+
+
+
+## Feature Engineering
+
+Several variables are derived from the raw data, including:
+
+- Shot coordinates (x, y)
+- Distance from goal
+- Shooting angle
+- Play pattern
+- Shot type
+- Body part used
+- Player position
+- Pressure indicator
+
+The target variable is:
+
+Goal=1
+NoGoal=0
+
+
+## Exploratory Data Analysis
+
+Preliminary analysis includes:
+
+- Goal vs non-goal distribution
+- Shot distance distribution
+- Goal probability by distance
+- Shot distribution by body part
+- Shot distribution by play pattern
+- Goal rate under defensive pressure
+
+These analyses help understand the structure of the dataset before model training.
 ---
 
-## Current Status
-
-- ✅ Competitions selected
-- ✅ Matches downloaded
-- ✅ Match IDs extracted
-- ✅ Events downloaded (sample)
-- ✅ Shot-level sample dataset created
-- ⏳ Feature selection
-- ⏳ Modeling (Logistic vs Random Forest)
-- ⏳ Evaluation (ROC, Calibration, RGA)
-
----
-
-## Sample Dataset
-
-A preliminary shot-level dataset (`shots_sample.csv`) has been generated using a sample of 20 matches to inspect:
-
-- Available features
-- Data structure
-- Missing values
-- Target variable definition
-
-The full dataset will be built using all selected matches.
-
----
+### Distribuzione della Distanza dei Tiri - World Cup 2022
+![Shot distance distribution](report/figures/distance_distribution_wc_2022.png)
 
 ## Next Steps
 
@@ -92,7 +107,21 @@ The full dataset will be built using all selected matches.
 - Performance comparison
 - Calibration analysis
 
----
+
+
+## Current Status
+
+✔ Data pipeline implemented  
+✔ Dataset construction (World Cup 2022)  
+✔ Feature engineering  
+✔ Exploratory data analysis  
+
+Next steps:
+
+- Variable selection
+- Logistic Regression model
+- Random Forest model
+- Model evaluation (ROC, AUC, calibration)
 
 ## Tools
 
