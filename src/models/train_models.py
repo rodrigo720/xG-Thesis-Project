@@ -98,6 +98,18 @@ def main():
     y_proba = best_model.predict_proba(X_test)[:, 1]
     y_pred = best_model.predict(X_test)
 
+    predictions_df = X_test.copy()
+
+    predictions_df["goal"] = y_test.values
+    predictions_df["model_xg"] = y_proba
+    predictions_df["statsbomb_xg"] = sb_xg_test.values
+
+    predictions_df.to_csv(
+        f"{RESULTS_DIR}/test_predictions_wc2022.csv",
+        index = False
+    )
+
+
     test_metrics = []
 
     test_metrics.append(
