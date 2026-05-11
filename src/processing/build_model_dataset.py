@@ -47,6 +47,7 @@ if __name__ == "__main__":
     df["distance"] = calculate_distance(df["x"], df["y"])
     df["angle"] = calculate_angle(df["x"], df["y"])
 
+
     # selezione colonne utili
     columns = [
         "match_id",
