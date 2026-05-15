@@ -2,6 +2,9 @@ import os
 import pandas as pd
 import matplotlib.pyplot as plt
 
+from sklearn.model_selection import train_test_split
+from imblearn.over_sampling import SMOTE
+
 RESULTS_DIR = "reports/model_results"
 FIGURES_DIR = "reports/figures"
 
@@ -80,15 +83,73 @@ def plot_numeric_feature_correlation():
     )
     plt.close()
 
+def plot_smote_distribution(df):
+    """
+    Plot class distribution before and after SMOTE on the training set.
+    This is used only to visualize the balancing effect of SMOTE.
+    """
+
+    y = df["goal"]
+
+    X = df[["distance", "angle"]].copy()
+    X = X.fillna(X.median())
+
+    X_train, X_test, y_train, y_test = train_test_split(
+        X,
+        y,
+        test_size=0.2,
+        stratify=y,
+        random_state=42
+    )
+
+    original_counts = y_train.value_counts().sort_index()
+
+    smote = SMOTE(random_state=42)
+    X_resampled, y_resampled = smote.fit_resample(X_train, y_train)
+
+    smote_counts = y_resampled.value_counts().sort_index()
+
+    labels = ["Non-goal", "Goal"]
+
+    fig, axes = plt.subplots(1, 2, figsize=(10, 5))
+
+    axes[0].bar(labels, original_counts.values)
+    axes[0].set_title("Before SMOTE")
+    axes[0].set_ylabel("Number of shots")
+
+    axes[1].bar(labels, smote_counts.values)
+    axes[1].set_title("After SMOTE")
+
+    plt.suptitle("Class Distribution Before and After SMOTE")
+    plt.tight_layout()
+
+    plt.savefig(
+        "reports/figures/smote_class_distribution.png",
+        dpi=300,
+        bbox_inches="tight"
+    )
+
+    plt.close()
+
+    print("SMOTE distribution plot saved correctly.")
+
 
 def main():
+
     os.makedirs(RESULTS_DIR, exist_ok=True)
     os.makedirs(FIGURES_DIR, exist_ok=True)
 
+    df = pd.read_csv(DATA_PATH)
+
+    plot_smote_distribution(df)
+
     plot_model_vs_statsbomb()
+
     plot_numeric_feature_correlation()
 
     print("Interpretation figures saved correctly.")
+
+
 
 
 if __name__ == "__main__":
